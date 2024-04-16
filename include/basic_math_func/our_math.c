@@ -62,3 +62,9 @@ double sqrt_approx(double x) {
 
     return guess;
 }
+
+void swap(double* a, double* b) {
+    double placeholder = a*;
+    a* = b*;
+    b* = temp;
+}
