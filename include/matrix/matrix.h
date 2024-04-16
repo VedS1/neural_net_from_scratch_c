@@ -1,15 +1,23 @@
+#include <stdio.h>
+#include <stdlib.h>
 
-// Basic Matrix Struct is_sq_matrix corresponds to bool value checking if the matrix is a sqaure matrix
+
+// Basic Matrix Struct 
 typedef struct{
 	int rows;
 	int cols;
-	double *data;
-	int is_sq_matrix;
+	double **data;
 } Matrix;
 
-Matrix mat_multi(Matrix a, Matrix b);
+Matrix* matrix_alloc(int rows, int cols);
 
-Matrix mat_add(Matrix a, Matrix b);
+void matrix_dealloc(Matrix* m);
+
+Matrix* GEMM(Matrix* a, Matrix* b);
+
+Matrix* matrix_multi(Matrix* a, Matrix* b);
+
+Matrix* GEMM(Matrix* a, Matrix* b); // C = AB + C
 
 void ReLU(Matrix* mat);
 
