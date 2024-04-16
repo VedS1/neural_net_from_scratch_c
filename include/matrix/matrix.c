@@ -104,3 +104,26 @@ void transpose(Matrix* a) {
 
 }
 
+
+void softmax(Matrix* mat) {
+    for (int x = 0; x < mat->rows; x++) {
+        double max_value = mat->data[x][0];
+        for (int y = 1; y < mat->cols; y++) {
+            if (mat->data[x][y] > max_value) {
+                max_value = mat->data[x][y];
+            }
+        }
+    }
+    for (int x = 0; x < mat->rows; x++) {
+        double row_sum = 0;
+        for (int y = 0; y < mat->cols; y++) {
+            mat->data[x][y] = exp_approx(mat->data[x][y] - max_value);
+
+            row_sum += mat->data[x][y];
+        }
+        for (int y = 0; y < mat->cols; y++) {
+            mat->data[x][y] /= row_sum;
+        }
+    }
+    
+}
