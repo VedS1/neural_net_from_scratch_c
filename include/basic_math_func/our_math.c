@@ -83,3 +83,10 @@ void swap(double* a, double* b) {
     a* = b*;
     b* = temp;
 }
+
+
+double sigmoid(Double value) {
+
+    return 1.0 / (1.0 + exp(-value));
+ 
+}

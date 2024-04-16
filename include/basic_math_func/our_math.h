@@ -16,3 +16,4 @@ double sqrt_approx(double x); //DONE | NOT TESTED
 
 void swap(double* a, double* b); //DONE | NOT TESTED
 
+double sigmoid(Double value);

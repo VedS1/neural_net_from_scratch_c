@@ -127,3 +127,12 @@ void softmax(Matrix* mat) {
     }
     
 }
+
+
+void Swish(Matrix* mat) {
+    for (int x = 0; x < mat->rows; x++) {
+        for (int y = 0; y < mat->cols; y++) {
+            mat->data[x][y] *= sigmoid(mat->data[x][y]);
+        }
+    }
+}
