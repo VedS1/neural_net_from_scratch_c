@@ -42,6 +42,14 @@ void matrix_dealloc(Matrix* m) {
     }
 }
 
+void matrix_partial_dealloc(Matrix* m) {
+        if (m != NULL) {
+        for (int i = 0; i < m->rows; i++) {
+            free(m->data[i]); 
+        }
+        free(m->data); // Free the row pointers
+    }
+}
 Matrix* matrix_multi(Matrix* a, Matrix* b){
 	if (a->cols != b->rows) {
     fprintf(stderr, "Not a square Matrix");
@@ -58,5 +66,25 @@ Matrix* matrix_multi(Matrix* a, Matrix* b){
         }
     }
 	return result;
+}
+
+void transpose(Matrix* a) {  
+    
+    Matrix* newA = matrix_alloc(a->cols, a->rows);
+    if (!newA) fprintf(stderr, "Transpose allocation failed!");
+    for (int x = 0; x < a->rows; x++) {
+        for (int y = 0; y < a->cols; y++) {
+            newA->data[y][x] = a->data[x][y];
+        }
+    }
+
+    matrix_partial_dealloc(a);
+    
+    a->rows = newA->cols;
+    a->cols = newA->rows;
+    a->data = newA->data;
+
+    free(newA);
+
 }
 
