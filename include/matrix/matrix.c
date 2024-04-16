@@ -68,6 +68,22 @@ Matrix* matrix_multi(Matrix* a, Matrix* b){
 	return result;
 }
 
+void GEMM(Matrix* a, Matrix* b, Matrix* c){
+    if (a->cols != b->rows || a->rows != c->rows || b->cols != c->cols) {
+        fprintf(stderr, "Matrix is not Square for GEMM");
+        return;
+    }
+
+    for (int i = 0; i < a->rows; i++) {
+        for (int j = 0; j < b->cols; j++) {
+            c->data[i][j] = 0;  // Initialize C[i][j]
+            for (int k = 0; k < a->cols; k++) {
+                c->data[i][j] += a->data[i][k] * b->data[k][j];
+            }
+        }
+    }
+}
+
 void transpose(Matrix* a) {  
     
     Matrix* newA = matrix_alloc(a->cols, a->rows);
