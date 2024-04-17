@@ -39,10 +39,10 @@ void GEMM(Matrix* a, Matrix* b, Matrix* c); // C = scalarA * AB + scalarB * C
 
 Matrix* matrix_multi(Matrix* a, Matrix* b); //DONE | NOT TESTED
 
-void ReLU(Matrix* mat); //NOT DONE | NOT TESTED
+void activationFunctionReLU(Matrix* mat); //NOT DONE | NOT TESTED
 
 void softmax(Matrix* mat); //DONE | NOT TESTED
 
 void matrix_partial_dealloc(Matrix* m); //DONE | NOT TESTED
 
-
+void activationFunctionSwish(Matrix* mat);
