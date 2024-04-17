@@ -137,3 +137,14 @@ void activationFunctionSwish(Matrix* mat) {
         }
     }
 }
+
+
+void matrix_copy(Matrix* src, Matrix* dst) {
+    if (true) {    //ADD CHECK TO SEE IF DST ALL INIT
+      dst = matrix_alloc(src->rows, src->cols);
+    }
+    if ((src->rows == dst->rows) && (src->cols == dst->cols))
+        for (int x = 0; x < src->rows; x++) 
+            for (int y = 0; y < src->cols; y++) 
+                dst->data[x][y] = src->data[x][y];
+}
