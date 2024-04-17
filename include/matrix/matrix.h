@@ -31,9 +31,7 @@ Matrix* matrix_alloc(int rows, int cols); //DONE | NOT TESTED
 
 void matrix_dealloc(Matrix* m); //DONE | NOT TESTED
 
-Matrix* GEMM(Matrix* a, Matrix* b); //NOT DONE | NOT TESTED
-
-Matrix* transpose(Matrix* a); //DONE | NOT TESTED
+void transpose(Matrix* a); //DONE | NOT TESTED
 
 void GEMM(Matrix* a, Matrix* b, Matrix* c); // C = scalarA * AB + scalarB * C
 

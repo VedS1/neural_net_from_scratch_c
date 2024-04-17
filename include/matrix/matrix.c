@@ -1,4 +1,5 @@
 #include "matrix.h" 
+#include "../basic_math_func/our_math.h"
 
 Matrix* matrix_alloc(int rows, int cols) {
     Matrix* m = malloc(sizeof(Matrix));
