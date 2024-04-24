@@ -15,20 +15,6 @@ double power(double base, int exp){
 	return result;
 }
 
-
-double power(double base, int exp){
-	double result = 1;
-	if (exp == 0) 
-		return 1;
-	for (int i=0; i < abs(exp); ++i) {
-		result *= base; 
-	}
-	if (exp < 0) { //negative exp
-		return 1/result;
-	}
-	return result;
-}
-
 // Exponential function using a series expansion
 double exp_approx(double x) {
     double sum = 1.0;  // e^0 is 1

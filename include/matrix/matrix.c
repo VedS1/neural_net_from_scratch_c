@@ -117,6 +117,7 @@ void softmax(Matrix* mat) {
     }
     for (int x = 0; x < mat->rows; x++) {
         double row_sum = 0;
+		double max_value = mat->data[x][0];
         for (int y = 0; y < mat->cols; y++) {
             mat->data[x][y] = exp_approx(mat->data[x][y] - max_value);
 
@@ -140,7 +141,7 @@ void activationFunctionSwish(Matrix* mat) {
 
 
 void matrix_copy(Matrix* src, Matrix* dst) {
-    if (true) {    //ADD CHECK TO SEE IF DST ALL INIT
+    if (1) {    //ADD CHECK TO SEE IF DST ALL INIT
       dst = matrix_alloc(src->rows, src->cols);
     }
     if ((src->rows == dst->rows) && (src->cols == dst->cols))

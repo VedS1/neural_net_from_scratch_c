@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <../basic_math_func/our_math.h>
+#include "../basic_math_func/our_math.h"
 
 // Basic Matrix Struct 
 typedef struct{
@@ -37,7 +37,7 @@ void GEMM(Matrix* a, Matrix* b, Matrix* c); // C = scalarA * AB + scalarB * C
 
 Matrix* matrix_multi(Matrix* a, Matrix* b); //DONE | NOT TESTED
 
-Matrix* matrix_add()
+Matrix* matrix_add();
 
 void activationFunctionReLU(Matrix* mat); //NOT DONE | NOT TESTED
 
