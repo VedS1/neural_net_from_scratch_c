@@ -1,6 +1,21 @@
 #include "our_math.h"
-
+ 
 // Simple function to compute x^y (or something like that)
+
+double power(double base, int exp){
+	double result = 1;
+	if (exp == 0) 
+		return 1;
+	for (int i=0; i < abs(exp); ++i) {
+		result *= base; 
+	}
+	if (exp < 0) { //negative exp
+		return 1/result;
+	}
+	return result;
+}
+
+
 double power(double base, int exp){
 	double result = 1;
 	if (exp == 0) 
@@ -18,7 +33,7 @@ double power(double base, int exp){
 double exp_approx(double x) {
     double sum = 1.0;  // e^0 is 1
     double term = 1.0;
-    for (int n = 1; n < 20; ++n) {  // Sum the first 20 terms of the series
+    for (int n = 1; n < exp_approx_series_length; ++n) {  // Sum the first 20 terms of the series
         term *= x / n;
         sum += term;
     }
@@ -27,7 +42,7 @@ double exp_approx(double x) {
 
 // Function to approximate ln using Newton-Raphson (simple numerical methods)
 double ln_approx(double x) {
-    if (x <= 0) {
+    if (x <= 0) {   
         return -1;  // undef for <= 0
     }
     double y = 0;
@@ -61,4 +76,17 @@ double sqrt_approx(double x) {
     }
 
     return guess;
+}
+
+void swap(double* a, double* b) {
+    double placeholder = a*;
+    a* = b*;
+    b* = temp;
+}
+
+
+double sigmoid(Double value) {
+
+    return 1.0 / (1.0 + exp(-value));
+ 
 }

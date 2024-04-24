@@ -1,4 +1,5 @@
 #include "matrix.h" 
+#include "../basic_math_func/our_math.h"
 
 Matrix* matrix_alloc(int rows, int cols) {
     Matrix* m = malloc(sizeof(Matrix));
@@ -42,6 +43,14 @@ void matrix_dealloc(Matrix* m) {
     }
 }
 
+void matrix_partial_dealloc(Matrix* m) {
+        if (m != NULL) {
+        for (int i = 0; i < m->rows; i++) {
+            free(m->data[i]); 
+        }
+        free(m->data); // Free the row pointers
+    }
+}
 Matrix* matrix_multi(Matrix* a, Matrix* b){
 	if (a->cols != b->rows) {
     fprintf(stderr, "Not a square Matrix");
@@ -76,4 +85,66 @@ void GEMM(Matrix* a, Matrix* b, Matrix* c){
     }
 }
 
+void transpose(Matrix* a) {  
+    
+    Matrix* newA = matrix_alloc(a->cols, a->rows);
+    if (!newA) fprintf(stderr, "Transpose allocation failed!");
+    for (int x = 0; x < a->rows; x++) {
+        for (int y = 0; y < a->cols; y++) {
+            newA->data[y][x] = a->data[x][y];
+        }
+    }
 
+    matrix_partial_dealloc(a);
+    
+    a->rows = newA->cols;
+    a->cols = newA->rows;
+    a->data = newA->data;
+
+    free(newA);
+
+}
+
+
+void softmax(Matrix* mat) {
+    for (int x = 0; x < mat->rows; x++) {
+        double max_value = mat->data[x][0];
+        for (int y = 1; y < mat->cols; y++) {
+            if (mat->data[x][y] > max_value) {
+                max_value = mat->data[x][y];
+            }
+        }
+    }
+    for (int x = 0; x < mat->rows; x++) {
+        double row_sum = 0;
+        for (int y = 0; y < mat->cols; y++) {
+            mat->data[x][y] = exp_approx(mat->data[x][y] - max_value);
+
+            row_sum += mat->data[x][y];
+        }
+        for (int y = 0; y < mat->cols; y++) {
+            mat->data[x][y] /= row_sum;
+        }
+    }
+    
+}
+
+
+void activationFunctionSwish(Matrix* mat) {
+    for (int x = 0; x < mat->rows; x++) {
+        for (int y = 0; y < mat->cols; y++) {
+            mat->data[x][y] *= sigmoid(mat->data[x][y]);
+        }
+    }
+}
+
+
+void matrix_copy(Matrix* src, Matrix* dst) {
+    if (true) {    //ADD CHECK TO SEE IF DST ALL INIT
+      dst = matrix_alloc(src->rows, src->cols);
+    }
+    if ((src->rows == dst->rows) && (src->cols == dst->cols))
+        for (int x = 0; x < src->rows; x++) 
+            for (int y = 0; y < src->cols; y++) 
+                dst->data[x][y] = src->data[x][y];
+}

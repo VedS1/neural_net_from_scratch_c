@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <../basic_math_func/our_math.h>
 
 // Basic Matrix Struct 
 typedef struct{
@@ -27,14 +27,25 @@ void* array_get(DynamArr* arr, int index);
 
 void array_set(DynamArr* arr, int index, void* item);
 
-Matrix* matrix_alloc(int rows, int cols);
+Matrix* matrix_alloc(int rows, int cols); //DONE | NOT TESTED
 
-void matrix_dealloc(Matrix* m);
+void matrix_dealloc(Matrix* m); //DONE | NOT TESTED
 
-Matrix* matrix_multi(Matrix* a, Matrix* b);
+void transpose(Matrix* a); //DONE | NOT TESTED
 
 void GEMM(Matrix* a, Matrix* b, Matrix* c); // C = scalarA * AB + scalarB * C
 
-void ReLU(Matrix* mat);
+Matrix* matrix_multi(Matrix* a, Matrix* b); //DONE | NOT TESTED
 
-void softmax(Matrix* mat);
+Matrix* matrix_add()
+
+void activationFunctionReLU(Matrix* mat); //NOT DONE | NOT TESTED
+
+void softmax(Matrix* mat); //DONE | NOT TESTED
+
+void matrix_partial_dealloc(Matrix* m); //DONE | NOT TESTED
+
+void activationFunctionSwish(Matrix* mat);
+
+void matrix_copy(Matrix* a, Matrix* b);
+
