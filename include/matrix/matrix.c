@@ -69,6 +69,20 @@ Matrix* matrix_multi(Matrix* a, Matrix* b){
 	return result;
 }
 
+void matrix_add(Matrix* mat, Matrix* mat2) {
+    if (mat2->cols != 1 || mat->rows != mat2->rows) {
+        fprintf(stderr, "Matrix 2 must be a 1x(?) vector with the same num. of rows as Matrix1\n");
+        return;
+    }
+    for (int i = 0; i < mat->rows; i++) {
+        for (int j = 0; j < mat->cols; j++) {
+            mat->data[i][j] += mat2->data[i][0];
+        }
+    }
+}
+
+
+
 void GEMM(Matrix* a, Matrix* b, Matrix* c){
     if (a->cols != b->rows || a->rows != c->rows || b->cols != c->cols) {
         fprintf(stderr, "Matrix is not Square for GEMM");

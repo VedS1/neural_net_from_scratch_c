@@ -71,8 +71,8 @@ void swap(double* a, double* b) {
 }
 
 
-double sigmoid(Double value) {
+double sigmoid(double value) {
 
-    return 1.0 / (1.0 + exp(-value));
+    return 1.0 / (1.0 + exp_approx(-value));
  
 }

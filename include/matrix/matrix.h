@@ -37,7 +37,7 @@ void GEMM(Matrix* a, Matrix* b, Matrix* c); // C = scalarA * AB + scalarB * C
 
 Matrix* matrix_multi(Matrix* a, Matrix* b); //DONE | NOT TESTED
 
-Matrix* matrix_add();
+void matrix_add(Matrix* mat, Matrix* mat2);
 
 void activationFunctionReLU(Matrix* mat); //NOT DONE | NOT TESTED
 
