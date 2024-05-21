@@ -1,74 +1,65 @@
-#include "matrix.h" 
-#include "../basic_math_func/our_math.h"
+#include "matrix.h"
 
+// Allocate a matrix with given rows and columns
 Matrix* matrix_alloc(int rows, int cols) {
     Matrix* m = malloc(sizeof(Matrix));
-    if (m == NULL) {
+    if (!m) {
         perror("Alloc failed for Matrix struct");
         return NULL;
     }
 
     m->rows = rows;
     m->cols = cols;
-    m->data = malloc(rows * sizeof(double*));
-    if (m->data == NULL) {
+    m->data = malloc(rows * cols * sizeof(double));
+    if (!m->data) {
         perror("Alloc failed for Matrix data");
         free(m);
         return NULL;
     }
 
-    for (int i = 0; i < rows; i++) {
-        m->data[i] = malloc(cols * sizeof(double));
-        if (m->data[i] == NULL) {
-            for (int j = 0; j < i; j++) {
-                free(m->data[j]);
-            }
-            free(m->data);
-            free(m);
-            perror("Alloc failed for Matrix rows");
-            return NULL;
-        }
-    }
-
     return m;
 }
 
+// Deallocate a matrix
 void matrix_dealloc(Matrix* m) {
-    if (m != NULL) {
-        for (int i = 0; i < m->rows; i++) {
-            free(m->data[i]); 
-        }
-        free(m->data); // Free the row pointers
-        free(m); // Free the structure
+    if (m) {
+        free(m->data);
+        free(m);
     }
 }
 
-void matrix_partial_dealloc(Matrix* m) {
-        if (m != NULL) {
-        for (int i = 0; i < m->rows; i++) {
-            free(m->data[i]); 
-        }
-        free(m->data); // Free the row pointers
-    }
+// Get element from matrix
+double get_element(Matrix* matrix, int row, int col) {
+    return matrix->data[row * matrix->cols + col];
 }
-Matrix* matrix_multi(Matrix* a, Matrix* b){
-	if (a->cols != b->rows) {
-    fprintf(stderr, "Not a square Matrix");
-    return NULL;
-	}
-	Matrix* result = matrix_alloc(a->rows, b->cols);
+
+// Set element in matrix
+void set_element(Matrix* matrix, int row, int col, double value) {
+    matrix->data[row * matrix->cols + col] = value;
+}
+
+// Matrix multiplication
+Matrix* matrix_multi(Matrix* a, Matrix* b) {
+    if (a->cols != b->rows) {
+        fprintf(stderr, "Matrix dimension mismatch for multiplication\n");
+        return NULL;
+    }
+
+    Matrix* result = matrix_alloc(a->rows, b->cols);
     if (!result) return NULL;
+
     for (int i = 0; i < a->rows; i++) {
         for (int j = 0; j < b->cols; j++) {
-            result->data[i][j] = 0;
+            result->data[i * result->cols + j] = 0;
             for (int k = 0; k < a->cols; k++) {
-                result->data[i][j] += a->data[i][k] * b->data[k][j];
+                result->data[i * result->cols + j] += a->data[i * a->cols + k] * b->data[k * b->cols + j];
             }
         }
     }
-	return result;
+    return result;
 }
 
+// Matrix addition
 void matrix_add(Matrix* mat, Matrix* mat2) {
     if (mat2->cols != 1 || mat->rows != mat2->rows) {
         fprintf(stderr, "Matrix 2 must be a 1x(?) vector with the same num. of rows as Matrix1 (add)\n");
@@ -76,162 +67,163 @@ void matrix_add(Matrix* mat, Matrix* mat2) {
     }
     for (int i = 0; i < mat->rows; i++) {
         for (int j = 0; j < mat->cols; j++) {
-            mat->data[i][j] += mat2->data[i][0];
+            mat->data[i * mat->cols + j] += mat2->data[i];
         }
     }
 }
 
-void matrix_sub(Matrix* mat, Matrix* mat2){
-	if (mat2->cols != 1 || mat->rows != mat2->rows){
-		fprintf(stderr, "Matrix 2 must be a 1x(?) vector with the same num. of rows as Matrix 1 (sub)");
-		return;
-	}
-	for (int i = 0; i < mat->rows; i++){
-		for (int j = 0; i < mat->cols; j++){
-			mat->data[i][j] -= mat2->data[i][0];
-		}
-	}
+// Matrix subtraction
+void matrix_sub(Matrix* mat, Matrix* mat2) {
+    if (mat2->cols != 1 || mat->rows != mat2->rows) {
+        fprintf(stderr, "Matrix 2 must be a 1x(?) vector with the same num. of rows as Matrix1 (sub)\n");
+        return;
+    }
+    for (int i = 0; i < mat->rows; i++) {
+        for (int j = 0; j < mat->cols; j++) {
+            mat->data[i * mat->cols + j] -= mat2->data[i];
+        }
+    }
 }
 
-void GEMM(Matrix* a, Matrix* b, Matrix* c){
+// General Matrix Multiply (GEMM)
+void GEMM(Matrix* a, Matrix* b, Matrix* c) {
     if (a->cols != b->rows || a->rows != c->rows || b->cols != c->cols) {
-        fprintf(stderr, "Matrix is not Square for GEMM");
+        fprintf(stderr, "Matrix dimension mismatch for GEMM\n");
         return;
     }
 
     for (int i = 0; i < a->rows; i++) {
         for (int j = 0; j < b->cols; j++) {
-            c->data[i][j] = 0;  // Initialize C[i][j]
+            c->data[i * c->cols + j] = 0;  // Initialize C[i][j]
             for (int k = 0; k < a->cols; k++) {
-                c->data[i][j] += a->data[i][k] * b->data[k][j];
+                c->data[i * c->cols + j] += a->data[i * a->cols + k] * b->data[k * b->cols + j];
             }
         }
     }
 }
 
-void transpose(Matrix* a) {  
-    
+// Transpose matrix
+void transpose(Matrix* a) {
     Matrix* newA = matrix_alloc(a->cols, a->rows);
-    if (!newA) fprintf(stderr, "Transpose allocation failed!");
+    if (!newA) {
+        fprintf(stderr, "Transpose allocation failed!");
+        return;
+    }
     for (int x = 0; x < a->rows; x++) {
         for (int y = 0; y < a->cols; y++) {
-            newA->data[y][x] = a->data[x][y];
+            newA->data[y * newA->cols + x] = a->data[x * a->cols + y];
         }
     }
 
-    matrix_partial_dealloc(a);
-    
+    free(a->data);
+    a->data = newA->data;
     a->rows = newA->cols;
     a->cols = newA->rows;
-    a->data = newA->data;
-
     free(newA);
-
 }
 
-
+// Apply softmax function to each row of the matrix
 void softmax(Matrix* mat) {
     for (int x = 0; x < mat->rows; x++) {
-        double max_value = mat->data[x][0];
+        double max_value = mat->data[x * mat->cols];
         for (int y = 1; y < mat->cols; y++) {
-            if (mat->data[x][y] > max_value) {
-                max_value = mat->data[x][y];
+            if (mat->data[x * mat->cols + y] > max_value) {
+                max_value = mat->data[x * mat->cols + y];
             }
         }
-    }
-    for (int x = 0; x < mat->rows; x++) {
         double row_sum = 0;
-		double max_value = mat->data[x][0];
         for (int y = 0; y < mat->cols; y++) {
-            mat->data[x][y] = exp_approx(mat->data[x][y] - max_value);
-
-            row_sum += mat->data[x][y];
+            mat->data[x * mat->cols + y] = exp_approx(mat->data[x * mat->cols + y] - max_value);
+            row_sum += mat->data[x * mat->cols + y];
         }
         for (int y = 0; y < mat->cols; y++) {
-            mat->data[x][y] /= row_sum;
+            mat->data[x * mat->cols + y] /= row_sum;
         }
     }
-    
 }
 
-
+// Apply Swish activation function to each element of the matrix
 void activationFunctionSwish(Matrix* mat) {
     for (int x = 0; x < mat->rows; x++) {
         for (int y = 0; y < mat->cols; y++) {
-            mat->data[x][y] *= sigmoid(mat->data[x][y]);
+            int index = x * mat->cols + y;
+            mat->data[index] *= 1.0 / (1.0 + exp_approx(-mat->data[index]));
         }
     }
 }
 
-void activationFunctionReLU(Matrix* mat){
+// Apply ReLU activation function to each element of the matrix
+void activationFunctionReLU(Matrix* mat) {
     if (!mat) {
         fprintf(stderr, "ReLU error: No input matrix\n");
         return;
     }
-	//if input to ReLU is less than 0, it changed to be 0; otherwise stays the same
     for (int i = 0; i < mat->rows; i++) {
         for (int j = 0; j < mat->cols; j++) {
-            mat->data[i][j] = mat->data[i][j] > 0 ? mat->data[i][j] : 0.0;
+            int index = i * mat->cols + j;
+            mat->data[index] = mat->data[index] > 0 ? mat->data[index] : 0.0;
         }
     }
 }
 
+// Copy matrix data from src to dst
 void matrix_copy(Matrix* src, Matrix* dst) {
-    if (1) {    //ADD CHECK TO SEE IF DST ALL INIT
-      dst = matrix_alloc(src->rows, src->cols);
+    if (dst == NULL) {
+        dst = matrix_alloc(src->rows, src->cols);
     }
-    if ((src->rows == dst->rows) && (src->cols == dst->cols))
-        for (int x = 0; x < src->rows; x++) 
-            for (int y = 0; y < src->cols; y++) 
-                dst->data[x][y] = src->data[x][y];
+    if ((src->rows == dst->rows) && (src->cols == dst->cols)) {
+        for (int i = 0; i < src->rows * src->cols; i++) {
+            dst->data[i] = src->data[i];
+        }
+    }
 }
 
-void matrix_scale(Matrix* mat, double scalar_val){ //scalar multiply
-	if (!mat){
-		fprintf(stderr, "Input matrix is NULL (scale)");
-		return;
-	}
-	for (int i = 0; i < mat->rows; i++) {
-		for (int j = 0; j < mat->cols; j++) {
-			mat->data[i][j] *= scalar_val;
-		}
-	}
+// Scale matrix by a scalar value
+void matrix_scale(Matrix* mat, double scalar_val) {
+    if (!mat) {
+        fprintf(stderr, "Input matrix is NULL (scale)");
+        return;
+    }
+    for (int i = 0; i < mat->rows * mat->cols; i++) {
+        mat->data[i] *= scalar_val;
+    }
 }
 
-void matrix_element_multi(Matrix* mat, Matrix* mat2){
-	if(!mat || !mat2){
-		fprintf(stderr, "Matrix 1 and Matrix 2 are NULL (element multiply)");
-		return;
-	}
-	if (mat->rows != mat2->rows || mat->cols != mat2->cols) {
-		fprintf(stderr, "Dimension mismatch (element multiply)\n");
-		return;
+// Element-wise multiplication of two matrices
+void matrix_element_multi(Matrix* mat, Matrix* mat2) {
+    if (!mat || !mat2) {
+        fprintf(stderr, "Matrix 1 and Matrix 2 are NULL (element multiply)");
+        return;
     }
-	for (int i =0; i < mat->rows; i++){
-		for (int j = 0; j < mat-> cols; j++){
-			mat->data[i][j] *= mat2->data[i][j];
-		}
-	}
+    if (mat->rows != mat2->rows || mat->cols != mat2->cols) {
+        fprintf(stderr, "Dimension mismatch (element multiply)\n");
+        return;
+    }
+    for (int i = 0; i < mat->rows * mat->cols; i++) {
+        mat->data[i] *= mat2->data[i];
+    }
 }
 
-Matrix* matrix_sum_cols(Matrix* mat){
-	if (!mat) {
-    	fprintf(stderr, "Matrix is NULL (sum cols)\n");
-		return NULL;
+// Sum columns of a matrix
+Matrix* matrix_sum_cols(Matrix* mat) {
+    if (!mat) {
+        fprintf(stderr, "Matrix is NULL (sum cols)\n");
+        return NULL;
     }
 
-    Matrix* sums = matrix_alloc(1, mat->cols); //only need 1 row since we summing cols
+    Matrix* sums = matrix_alloc(1, mat->cols);
     if (!sums) {
         fprintf(stderr, "Failed to allocate memory (sum cols)\n");
         return NULL;
     }
 
     for (int j = 0; j < mat->cols; j++) {
-        sums->data[0][j] = 0;
+        sums->data[j] = 0;
         for (int i = 0; i < mat->rows; i++) {
-            sums->data[0][j] += mat->data[i][j];
+            sums->data[j] += mat->data[i * mat->cols + j];
         }
     }
 
     return sums;
 }
+
