@@ -1,6 +1,6 @@
 #include "propagation.h"
 
-//W1 and W2 are weight matricies
+//W1 and W2 are weight matrices
 //b1 and b2 are bias vectors
 //X input matrix
 //Z1 and Z2 linear comb of activation layer?? not rlly sure tbh lol
@@ -118,6 +118,8 @@ void backward_propagation(Matrix* Z1, Matrix* A1, Matrix* Z2, Matrix* A2, Matrix
     matrix_dealloc(dZ1);
     matrix_dealloc(X_trans);
 }
+
+//idk this is whatever the python source says so...
 void update_params(Matrix* W1, Matrix* b1, Matrix* W2, Matrix* b2, Matrix* dW1, Matrix* db1, Matrix* dW2, Matrix* db2, double alpha) {
     for (int i = 0; i < W1->rows * W1->cols; i++) {
         W1->data[i] -= alpha * dW1->data[i];
@@ -132,6 +134,8 @@ void update_params(Matrix* W1, Matrix* b1, Matrix* W2, Matrix* b2, Matrix* dW1, 
         b2->data[i] -= alpha * db2->data[i];
     }
 }
+
+//same thing
 Matrix* get_predictions(Matrix* A2) {
     Matrix* predictions = matrix_alloc(A2->rows, 1);
     if (!predictions) {
@@ -163,7 +167,7 @@ double get_accuracy(Matrix* predictions, Matrix* Y) {
     }
     return (double)correct_count / Y->rows;
 }
-
+//This function was left out for whatever reason, it shows up way earlier in the python but I just put it here.
 void init_params(Matrix** W1, Matrix** b1, Matrix** W2, Matrix** b2, int input_size, int hidden_size, int output_size) {
     *W1 = matrix_alloc(hidden_size, input_size);
     *b1 = matrix_alloc(hidden_size, 1);
@@ -192,11 +196,31 @@ void init_params(Matrix** W1, Matrix** b1, Matrix** W2, Matrix** b2, int input_s
     }
 }
 
+//function in order to load the data from the CSV file for training.
+void load_data(const char* x_file, const char* y_file, Matrix** X, Matrix** Y, int rows, int cols) {
+    *X = matrix_alloc(rows, cols);
+    *Y = matrix_alloc(rows, 1);
+
+    FILE* fx = fopen(x_file, "rb");
+    FILE* fy = fopen(y_file, "rb");
+
+    if (!fx || !fy) {
+        perror("Failed to open data files");
+        exit(EXIT_FAILURE);
+    }
+
+    fread((*X)->data, sizeof(double), rows * cols, fx);
+    fread((*Y)->data, sizeof(double), rows, fy);
+
+    fclose(fx);
+    fclose(fy);
+}
+
 void gradient_descent(Matrix* X, Matrix* Y, double alpha, int iterations, Matrix** W1, Matrix** b1, Matrix** W2, Matrix** b2) {
-    // Initialize parameters
     int input_size = X->cols;
-    int hidden_size = 10; // Example hidden layer size
-    int output_size = 2; // Example output size for binary classification
+    //random values, optimize later
+    int hidden_size = 10; 
+    int output_size = 2; 
     init_params(W1, b1, W2, b2, input_size, hidden_size, output_size);
 
     for (int i = 0; i < iterations; i++) {
@@ -205,6 +229,7 @@ void gradient_descent(Matrix* X, Matrix* Y, double alpha, int iterations, Matrix
 
         Matrix *dW1 = NULL, *db1 = NULL, *dW2 = NULL, *db2 = NULL;
         backward_propagation(Z1, NULL, Z2, NULL, *W1, *W2, X, Y, (double)Y->rows, &dW1, &db1, &dW2, &db2);
+        
 
         update_params(*W1, *b1, *W2, *b2, dW1, db1, dW2, db2, alpha);
 
