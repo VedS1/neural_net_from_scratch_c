@@ -30,5 +30,12 @@ void matrix_scale(Matrix* mat, double scalar_val);
 void matrix_element_multi(Matrix* mat, Matrix* mat2);
 Matrix* matrix_sum_cols(Matrix* mat);
 
+void matrix_element_multi(Matrix* mat, Matrix* mat2); // Element-wise multiplication of two matrices
+
+Matrix* matrix_sum_cols(Matrix* mat); // Sum columns of a matrix
+
 #endif // MATRIX_H
 
+void matrix_apply_function(Matrix* mat, double (*func)(double));
+
+void matrix_apply_function_derivative(Matrix* mat, double (*func)(double));

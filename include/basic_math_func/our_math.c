@@ -76,3 +76,27 @@ double sigmoid(double value) {
     return 1.0 / (1.0 + exp_approx(-value));
  
 }
+double relu(double x) {
+    return x > 0 ? x : 0;
+}
+
+double relu_derivative(double x) {
+    return x > 0 ? 1 : 0;
+}
+
+double mean_squared_error(double* y_true, double* y_pred, int length) {
+    double sum = 0.0;
+    for (int i = 0; i < length; i++) {
+        double diff = y_true[i] - y_pred[i];
+        sum += diff * diff;
+    }
+    return sum / length;
+}
+
+double cross_entropy_loss(double* y_true, double* y_pred, int length) {
+    double sum = 0.0;
+    for (int i = 0; i < length; i++) {
+        sum += -y_true[i] * log(y_pred[i]) - (1 - y_true[i]) * log(1 - y_pred[i]);
+    }
+    return sum / length;
+}

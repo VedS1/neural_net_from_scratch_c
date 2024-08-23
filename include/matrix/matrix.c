@@ -227,3 +227,14 @@ Matrix* matrix_sum_cols(Matrix* mat) {
     return sums;
 }
 
+void matrix_apply_function(Matrix* mat, double (*func)(double)) {
+    for (int i = 0; i < mat->rows * mat->cols; i++) {
+        mat->data[i] = func(mat->data[i]);
+    }
+}
+
+void matrix_apply_function_derivative(Matrix* mat, double (*func)(double)) {
+    for (int i = 0; i < mat->rows * mat->cols; i++) {
+        mat->data[i] = func(mat->data[i]);
+    }
+}
