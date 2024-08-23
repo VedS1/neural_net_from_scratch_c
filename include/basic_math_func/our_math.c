@@ -65,9 +65,9 @@ double sqrt_approx(double x) {
 }
 
 void swap(double* a, double* b) {
-    double placeholder = a*;
-    a* = b*;
-    b* = temp;
+    double placeholder = *a;
+    *a = *b;
+    *b = placeholder;
 }
 
 
