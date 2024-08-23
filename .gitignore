@@ -29,3 +29,4 @@
 # Training and Test files #
 ###########################
 *.csv
+.aider*

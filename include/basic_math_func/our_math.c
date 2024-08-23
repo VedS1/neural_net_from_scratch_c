@@ -1,3 +1,4 @@
+#include <math.h> // just for testing purposes
 #include "our_math.h"
  
 // Simple function to compute x^y (or something like that)
